@@ -6,21 +6,19 @@ sys.path.append("/home/Patus/miniconda3/lib/python3.6/site-packages")
 from termcolor import colored
 
 
-game = "on"
-board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-str(board)
-sign = 'X'
+def game_restart():
+    restart = input("Do you want to play again? Y/N: ")
+    if restart == 'Y' or restart == 'y':
+        os.system('clear')
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
 
-
-def player_rotation():
-    global currentPlayer
-    global player1
-    global player2
-
+def player_rotation(currentPlayer, player1, player2):
     if currentPlayer == player1:
         currentPlayer = player2
     elif currentPlayer == player2:
         currentPlayer = player1
+    return currentPlayer
 
 
 def draw_board():
@@ -39,7 +37,11 @@ def waitBeforeClearingTerminal(n):
     os.system('clear')
     draw_board()
 
-def wait4player(board, sign, game):
+#def signChange():
+
+
+def wait4player():
+    global sign
     try:
         choice = int(input(colored("Pick your next move (" + currentPlayer + "'s turn)... ")))
         if choice in [1, 2, 3, 4, 5, 6, 7, 8, 9] and board[choice] == ' ':
@@ -48,7 +50,7 @@ def wait4player(board, sign, game):
                 sign = 'O'
             elif sign == 'O':
                 sign = 'X'
-            check_win(board, sign, game)
+            check_win()
         else:
             print(colored("Nope!", "red"))
             waitBeforeClearingTerminal(1.5)
@@ -56,7 +58,9 @@ def wait4player(board, sign, game):
         print("Play using numeric keyboard! ")
 
 
-def check_win(board, sign, game):
+def check_win():
+    global game
+    global sign
     # Horizontal
     if board[1] == board[2] and board[2] == board[3] and board[1] != ' ':
         game = "Win"
@@ -100,6 +104,12 @@ def check_win(board, sign, game):
 # I want to play a game !
 
 
+game = "on"
+board = ['SPAM', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+str(board)
+sign = 'X'
+
+
 os.system('clear')
 player1 = str(input("Enter the name of the player 1: "))
 if player1 == '':
@@ -127,11 +137,8 @@ while game == "on":
     draw_board()
     currentSign = sign
     while currentSign == sign:
-        wait4player(board, sign, game)
-    player_rotation()
+        wait4player()
+    currentPlayer = player_rotation(currentPlayer, player1, player2)
 
-restart = input("Do you want to play again? Y/N: ")
-if restart == 'Y' or restart == 'y':
-    os.system('clear')
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
+game_restart()
+
