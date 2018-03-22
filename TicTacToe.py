@@ -56,47 +56,64 @@ def wait4player():
             waitBeforeClearingTerminal(1.5)
     except ValueError:
         print("Play using numeric keyboard! ")
+        waitBeforeClearingTerminal()
 
+# def set_game_state_to_win_or_draw()
 
 def check_win():
+
+
+
     global game
     global sign
     # Horizontal
-    if board[1] == board[2] and board[2] == board[3] and board[1] != ' ':
-        game = "Win"
+    # if board[1] == board[2] and board[2] == board[3] and board[1] != ' ':
+    #     game = "Win"
 
-    elif board[4] == board[5] and board[5] == board[6] and board[4] != ' ':
-        game = "Win"
+    # elif board[4] == board[5] and board[5] == board[6] and board[4] != ' ':
+    #     game = "Win"
 
-    elif board[7] == board[8] and board[8] == board[9] and board[7] != ' ':
-        game = "Win"
+    # elif board[7] == board[8] and board[8] == board[9] and board[7] != ' ':
+    #     game = "Win"
 
-    # Vertical
-    elif board[1] == board[4] and board[4] == board[7] and board[1] != ' ':
-        game = "Win"
+    # # Vertical
+    # elif board[1] == board[4] and board[4] == board[7] and board[1] != ' ':
+    #     game = "Win"
 
-    elif board[2] == board[5] and board[5] == board[8] and board[2] != ' ':
-        game = "Win"
+    # elif board[2] == board[5] and board[5] == board[8] and board[2] != ' ':
+    #     game = "Win"
 
-    elif board[3] == board[6] and board[6] == board[9] and board[3] != ' ':
-        game = "Win"
+    # elif board[3] == board[6] and board[6] == board[9] and board[3] != ' ':
+    #     game = "Win"
 
-    # Diagonal
-    elif board[1] == board[5] and board[5] == board[9] and board[5] != ' ':
-        game = "Win"
+    # # Diagonal
+    # elif board[1] == board[5] and board[5] == board[9] and board[5] != ' ':
+    #     game = "Win"
 
-    elif board[3] == board[5] and board[5] == board[7] and board[5] != ' ':
-        game = "Win"
+    # elif board[3] == board[5] and board[5] == board[7] and board[5] != ' ':
+    #     game = "Win"
 
+    for i in range (1, 8, 3):
+        if board[i] == board[i+1] == board [i+2] and board[i] != ' ':
+            return 'Win'
+    for i in range (1, 4):
+        if board[i] == board[i+3] == board [i+6] and board[i] != ' ':
+            return 'Win'
+    if board[3] == board[5] == board[7] and board[3] != ' ':
+        return 'Win'
+    if board[1] == board[5] == board[9] and board[1] != ' ':
+        return 'Win'
     # Draw
     elif ' ' not in board:
-        game = "Draw"
+        return "Draw"
 
+def someone_wins(game, currentPlayer):
     if game == 'Win':
         os.system('clear')
         draw_board()
         print("%s wins!" % currentPlayer)
-    if game == 'Draw':
+
+    elif game == 'Draw':
         os.system('clear')
         draw_board()
         print("Draw!")
