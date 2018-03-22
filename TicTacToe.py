@@ -6,6 +6,7 @@ sys.path.append("/home/Patus/miniconda3/lib/python3.6/site-packages")
 from termcolor import colored
 
 
+
 def game_restart():
     restart = input("Do you want to play again? Y/N: ")
     if restart == 'Y' or restart == 'y':
@@ -21,7 +22,7 @@ def player_rotation(currentPlayer, player1, player2):
     return currentPlayer
 
 
-def draw_board():
+def draw_board(board):
     lanes = colored("━━━╋━━━╋━━━", "yellow")
     col = colored("┃", "yellow")
     columns = shutil.get_terminal_size().columns
@@ -32,67 +33,32 @@ def draw_board():
     print(lanes.center(columns))
     print("    %s %s %s %s %s       ".center(columns) % (board[1], col, board[2], col, board[3]))
 
-def waitBeforeClearingTerminal(n):
-    time.sleep(n)
+def waitBeforeClearingTerminal(sleepTime):
+    time.sleep(sleepTime)
     os.system('clear')
     draw_board()
 
-#def signChange():
+def sign_change(sign):
+    if sign == 'X':
+        return 'O'
+    else:
+        return 'X'
 
-
-def wait4player():
-    global sign
+def wait4playerChoice(sign, currentPlayer):
     try:
         choice = int(input(colored("Pick your next move (" + currentPlayer + "'s turn)... ")))
         if choice in [1, 2, 3, 4, 5, 6, 7, 8, 9] and board[choice] == ' ':
-            board[choice] = sign
-            if sign == 'X':
-                sign = 'O'
-            elif sign == 'O':
-                sign = 'X'
-            check_win()
+            return choice
         else:
             print(colored("Nope!", "red"))
-            waitBeforeClearingTerminal(1.5)
+            waitBeforeClearingTerminal(1)
+            return None
     except ValueError:
-        print("Play using numeric keyboard! ")
-        waitBeforeClearingTerminal()
+        print(colored("Play using numeric keyboard! ", "red"))
+        waitBeforeClearingTerminal(1.3)
+        return None
 
-# def set_game_state_to_win_or_draw()
-
-def check_win():
-
-
-
-    global game
-    global sign
-    # Horizontal
-    # if board[1] == board[2] and board[2] == board[3] and board[1] != ' ':
-    #     game = "Win"
-
-    # elif board[4] == board[5] and board[5] == board[6] and board[4] != ' ':
-    #     game = "Win"
-
-    # elif board[7] == board[8] and board[8] == board[9] and board[7] != ' ':
-    #     game = "Win"
-
-    # # Vertical
-    # elif board[1] == board[4] and board[4] == board[7] and board[1] != ' ':
-    #     game = "Win"
-
-    # elif board[2] == board[5] and board[5] == board[8] and board[2] != ' ':
-    #     game = "Win"
-
-    # elif board[3] == board[6] and board[6] == board[9] and board[3] != ' ':
-    #     game = "Win"
-
-    # # Diagonal
-    # elif board[1] == board[5] and board[5] == board[9] and board[5] != ' ':
-    #     game = "Win"
-
-    # elif board[3] == board[5] and board[5] == board[7] and board[5] != ' ':
-    #     game = "Win"
-
+def check_win(board):
     for i in range (1, 8, 3):
         if board[i] == board[i+1] == board [i+2] and board[i] != ' ':
             return 'Win'
@@ -106,23 +72,25 @@ def check_win():
     # Draw
     elif ' ' not in board:
         return "Draw"
+    else:
+        return "on"
 
-def someone_wins(game, currentPlayer):
+def someone_wins(game, currentPlayer, board):
     if game == 'Win':
         os.system('clear')
-        draw_board()
+        draw_board(board)
         print("%s wins!" % currentPlayer)
 
     elif game == 'Draw':
         os.system('clear')
-        draw_board()
-        print("Draw!")
+        draw_board(board)
+        print("It's a draw!")
 
 # I want to play a game !
 
 
 game = "on"
-board = ['SPAM', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+board = ['Too lazy to use 0 index', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 str(board)
 sign = 'X'
 
@@ -151,10 +119,17 @@ os.system('clear')
 
 while game == "on":
     os.system('clear')
-    draw_board()
+    draw_board(board)
     currentSign = sign
-    while currentSign == sign:
-        wait4player()
+    currentBoard = board
+    choice = None
+    while choice == None:
+        choice = wait4playerChoice(sign, currentPlayer)
+        if choice != None:
+            board[choice] = sign
+    sign = sign_change(sign)
+    game = check_win(board)
+    someone_wins(game, currentPlayer, board)
     currentPlayer = player_rotation(currentPlayer, player1, player2)
 
 game_restart()
