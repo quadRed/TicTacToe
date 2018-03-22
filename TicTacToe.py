@@ -6,6 +6,36 @@ sys.path.append("/home/Patus/miniconda3/lib/python3.6/site-packages")
 from termcolor import colored
 
 
+def initializePlayer(number):
+    player = str(input("Enter the name of the player %s: " % number))
+    if player == '':
+        print("Ok, your name will be your sign!")
+        time.sleep(1)
+        os.system('clear')
+        return ''
+    else:
+        print("Hello, %s!" % player)
+        time.sleep(1)
+        os.system('clear')
+        return player
+
+def players_choose_sign():
+    signsList = []
+    signHasBeenChosen = False
+    while not signHasBeenChosen:
+        chosenSign = input("Player 1! Choose either \"X\" or \"O\": ")
+        if chosenSign == 'X' or chosenSign == 'O':
+            signsList += [chosenSign]
+            if chosenSign == 'X':
+                signsList += ['O']
+            else:
+                signsList += ['X']
+
+            signHasBeenChosen = True
+        else:
+            print(colored("I said X or O, honey", "red"))
+    return signsList
+
 
 def game_restart():
     restart = input("Do you want to play again? Y/N: ")
@@ -36,17 +66,20 @@ def draw_board(board):
 def waitBeforeClearingTerminal(sleepTime):
     time.sleep(sleepTime)
     os.system('clear')
-    draw_board()
+    draw_board(board)
 
-def sign_change(sign):
-    if sign == 'X':
-        return 'O'
+def sign_change(sign, signTable):
+    if sign == signTable[0]:
+        return signTable[1]
     else:
-        return 'X'
+        return signTable[0]
 
 def wait4playerChoice(sign, currentPlayer):
     try:
-        choice = int(input(colored("Pick your next move (" + currentPlayer + "'s turn)... ")))
+        if currentPlayer == sign:
+            choice = int(input(colored("Pick your next move (" + currentPlayer + "'s turn)... ")))
+        else:
+            choice = int(input(colored("Pick your next move (" + currentPlayer + "'s turn - %s)... " % sign)))
         if choice in [1, 2, 3, 4, 5, 6, 7, 8, 9] and board[choice] == ' ':
             return choice
         else:
@@ -80,6 +113,7 @@ def someone_wins(game, currentPlayer, board):
         os.system('clear')
         draw_board(board)
         print("%s wins!" % currentPlayer)
+        os.system("figlet Congrats")
 
     elif game == 'Draw':
         os.system('clear')
@@ -87,31 +121,22 @@ def someone_wins(game, currentPlayer, board):
         print("It's a draw!")
 
 # I want to play a game !
-
-
 game = "on"
 board = ['Too lazy to use 0 index', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 str(board)
-sign = 'X'
-
-
 os.system('clear')
-player1 = str(input("Enter the name of the player 1: "))
+signTable = []
+
+player1 = initializePlayer('1')
+player2 = initializePlayer('2')
+
+signTable = players_choose_sign()
+sign = signTable[0]
+
 if player1 == '':
-    player1 = 'X'
-
-player2 = str(input("Enter the name of the player 2: "))
+    player1 = signTable[0]
 if player2 == '':
-    player2 = 'O'
-
-if player1 == '':
-    player1 = 'O'
-
-if player2 == '':
-    player2 = 'X'
-
-if input(player1 + '! Type "O" if you want to start as O\'s instead of X\'s: ') == "O":
-    sign = 'O'
+    player2 = signTable[1]
 
 currentPlayer = player1
 os.system('clear')
@@ -120,14 +145,12 @@ os.system('clear')
 while game == "on":
     os.system('clear')
     draw_board(board)
-    currentSign = sign
-    currentBoard = board
     choice = None
     while choice == None:
         choice = wait4playerChoice(sign, currentPlayer)
         if choice != None:
             board[choice] = sign
-    sign = sign_change(sign)
+    sign = sign_change(sign, signTable)
     game = check_win(board)
     someone_wins(game, currentPlayer, board)
     currentPlayer = player_rotation(currentPlayer, player1, player2)
