@@ -4,13 +4,16 @@ import shutil
 import time
 sys.path.append("/home/Patus/miniconda3/lib/python3.6/site-packages")
 from termcolor import colored
+# sys.path.append("/home/Patus/miniconda3/lib/python3.6/site-packages/console_menu-0.4.0-py3.6.egg")
+# from consolemenu import *
+# from consolemenu.items import *
 
 
 def initializePlayer(number):
     player = str(input("Enter the name of the player %s: " % number))
     if player == '':
         print("Ok, your name will be your sign!")
-        time.sleep(1)
+        time.sleep(1.2)
         os.system('clear')
         return ''
     else:
@@ -34,15 +37,18 @@ def players_choose_sign():
             signHasBeenChosen = True
         else:
             print(colored("I said X or O, honey", "red"))
+            time.sleep(1)
+            os.system("clear")
     return signsList
 
-
 def game_restart():
-    restart = input("Do you want to play again? Y/N: ")
+    restart = input("Need a quick restart? (Y/y). \nAnything else will send you to the main menu.\n")
     if restart == 'Y' or restart == 'y':
         os.system('clear')
         python = sys.executable
         os.execl(python, python, * sys.argv)
+    else:
+        os.system('clear; exit')
 
 def player_rotation(currentPlayer, player1, player2):
     if currentPlayer == player1:
@@ -50,7 +56,6 @@ def player_rotation(currentPlayer, player1, player2):
     elif currentPlayer == player2:
         currentPlayer = player1
     return currentPlayer
-
 
 def draw_board(board):
     lanes = colored("━━━╋━━━╋━━━", "yellow")
@@ -121,6 +126,7 @@ def someone_wins(game, currentPlayer, board):
         print("It's a draw!")
 
 # I want to play a game !
+
 game = "on"
 board = ['Too lazy to use 0 index', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 str(board)
@@ -141,6 +147,7 @@ if player2 == '':
 currentPlayer = player1
 os.system('clear')
 
+#Main game loop
 
 while game == "on":
     os.system('clear')
@@ -155,5 +162,7 @@ while game == "on":
     someone_wins(game, currentPlayer, board)
     currentPlayer = player_rotation(currentPlayer, player1, player2)
 
+time.sleep(2)
+os.system('clear')
 game_restart()
 
